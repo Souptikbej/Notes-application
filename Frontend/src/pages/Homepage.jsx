@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import Navber from "../components/Navber";
 
 const Homepage = () => {
   return (
-    <div>
-      <h1>Home page</h1>
+    <div className="min-h-screen">
+      <Navber />
     </div>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;
