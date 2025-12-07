@@ -2,8 +2,23 @@ import React from "react";
 import { FileText, Trash2, Pencil } from "lucide-react";
 import { Link } from "react-router";
 import { formatDate } from "../lib/utils.js";
+import api from "../lib/axios.js";
+import toast from "react-hot-toast";
 
 const Notecard = ({ note }) => {
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this notes?")) return;
+    try {
+      await api.delete(`/notes/${id}`);
+      toast.success("Notes deleted successfully");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Failed to delete note");
+      console.log("Error in handleDelete", error);
+    }
+  };
   return (
     <Link
       to={`/note/${note._id}`}
@@ -21,7 +36,10 @@ const Notecard = ({ note }) => {
           <button className="p-2 rounded-full hover:bg-blue-100 text-blue-600">
             <Pencil size={18} />
           </button>
-          <button className="p-2 rounded-full hover:bg-red-100 text-red-600">
+          <button
+            className="p-2 rounded-full hover:bg-red-100 text-red-600"
+            onClick={(e) => handleDelete(e, note._id)}
+          >
             <Trash2 size={18} />
           </button>
         </div>

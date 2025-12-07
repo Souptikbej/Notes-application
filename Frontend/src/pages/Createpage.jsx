@@ -1,29 +1,30 @@
 import React from "react";
 import { useState } from "react";
-import { FileText, Type, AlignLeft, Save } from "lucide-react";
-import axios from "axios";
+import { FileText, Type, AlignLeft, Save, ArrowLeftIcon } from "lucide-react";
 import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router";
+import api from "../lib/axios";
 
 const Createpage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
   const handleCreate = async (e) => {
     e.preventDefault();
-    if (!title || !content) {
+    if (!title.trim() || !content.trim()) {
       toast.error("Title & content are required!");
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
-      await axios.post("http://localhost:5001/api/notes", {
+      await api.post("/notes", {
         title,
         content,
       });
-
       toast.success("Note created successfully!");
+      navigate("/");
       setTitle("");
       setContent("");
     } catch (err) {
@@ -35,6 +36,10 @@ const Createpage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 animate-fadeIn">
+        <Link to="/" className="btn btn-ghost mb-6">
+          <ArrowLeftIcon className="size-5" />
+          Back to Notes
+        </Link>
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-2 text-indigo-600 mb-2">
