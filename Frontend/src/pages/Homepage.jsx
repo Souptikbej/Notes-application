@@ -3,6 +3,7 @@ import Navber from "../components/Navber";
 import RateLimitedUI from "../components/RateLimitUI";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Notecard from "../components/Notecard";
 
 const Homepage = () => {
   const [isRatelimit, SetRatelimit] = useState(false);
@@ -33,6 +34,18 @@ const Homepage = () => {
     <div className="min-h-screen">
       <Navber />
       {isRatelimit && <RateLimitedUI />}
+      <div className="max-w-7xl mx-auto p-4 mt-6">
+        {loading && (
+          <div className="text-center text-primary py-10">Loading Notes...</div>
+        )}
+        {notes.length > 0 && !isRatelimit && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-primary">
+            {notes.map((note) => (
+              <Notecard key={note._id} note={note} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
