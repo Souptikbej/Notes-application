@@ -53,9 +53,13 @@ const Notecard = ({ note }) => {
       {/* Footer */}
       <div className="mt-4 text-xs text-gray-400 flex justify-between items-center">
         <span>{formatDate(new Date(note.createdAt))}</span>
-        <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs group-hover:scale-105 transition-transform duration-300">
+        <Link
+          to="/create"
+          onClick={(e) => e.stopPropagation()}
+          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-xs group-hover:scale-105 transition-transform duration-300"
+        >
           New
-        </span>
+        </Link>
       </div>
     </Link>
   );
