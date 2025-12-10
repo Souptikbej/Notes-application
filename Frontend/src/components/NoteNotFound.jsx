@@ -4,8 +4,8 @@ import { Link } from "react-router";
 
 const NoteNotFound = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 p-6">
-      <div className="bg-white/70 backdrop-blur-xl border border-slate-300 shadow-xl rounded-3xl p-10 max-w-md text-center animate-fadeIn">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="glass rounded-3xl p-10 max-w-md text-center animate-fadeIn">
         {/* Icon */}
         <div className="flex justify-center mb-6">
           <FileWarning className="h-20 w-20 text-red-500 drop-shadow-md animate-bounce-slow" />

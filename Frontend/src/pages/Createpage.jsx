@@ -35,7 +35,7 @@ const Createpage = () => {
   };
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 animate-fadeIn">
+      <div className="w-full max-w-lg glass backdrop-blur-lg rounded-3xl shadow-2xl p-8 animate-fadeIn">
         <Link to="/" className="btn btn-ghost mb-6">
           <ArrowLeftIcon className="size-5" />
           Back to Notes
