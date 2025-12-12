@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import notesPouter from "./Routees/notesRouter.js"
+import notesRouter from "./Routees/notesRouter.js"
 import { connectDB } from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 dotenv.config();
@@ -19,7 +19,7 @@ app.use(rateLimiter)
 //     next();
 // })
 
-app.use("/api/notes", notesPouter);
+app.use("/api/notes", notesRouter);
 
 connectDB().then(() => {
     app.listen(PORT, () => {

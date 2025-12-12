@@ -19,6 +19,16 @@ const Createpage = () => {
 
     setLoading(true);
     try {
+      // Step 1: Toxicity pre-check
+      // const check = await api.post("/notes/check-toxicity", {
+      //   text: `${title} ${content}`,
+      // });
+
+      // if (check.data.flagged) {
+      //   toast.error("Your note contains toxic, abusive, or harmful content.");
+      //   setLoading(false);
+      //   return;
+      // }
       await api.post("/notes", { title, content });
       toast.success("Note created successfully!");
       navigate("/");

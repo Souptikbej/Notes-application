@@ -5,6 +5,7 @@ const router = express.Router();
 router.get("/", getallnotes);
 router.get("/:id", getnoteById);
 router.post("/", createnotes);
+// router.post("/check-toxicity", checkNoteToxicity);
 router.put("/:id", updatenotes);
 router.delete("/:id", deletenotes);
 

@@ -1,35 +1,25 @@
 import axios from "axios";
 
 export async function checkToxicity(text) {
-    try {
-        const response = await axios.post(
-            "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze",
-            {
-                comment: { text },
-                languages: ["en"],
-                requestedAttributes: {
-                    TOXICITY: {},
-                    INSULT: {},
-                    PROFANITY: {},
-                    THREAT: {}
-                }
-            },
-            {
-                params: { key: process.env.PERSPECTIVE_API_KEY }
-            }
-        );
+  try {
+    const apiKey = process.env.PERSPECTIVE_API_KEY;
 
-        const scores = response.data.attributeScores;
+    const url = `https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=${apiKey}`;
 
-        const toxicity =
-            scores.TOXICITY.summaryScore.value ||
-            scores.INSULT.summaryScore.value ||
-            scores.PROFANITY.summaryScore.value ||
-            scores.THREAT.summaryScore.value;
+    const body = {
+      comment: { text },
+      languages: ["en"],
+      requestedAttributes: { TOXICITY: {} }
+    };
 
-        return toxicity; // 0.0 – 1.0
-    } catch (err) {
-        console.error("Perspective API Error:", err.message);
-        return 0;
-    }
+    const response = await axios.post(url, body);
+
+    const score =
+      response.data.attributeScores.TOXICITY.summaryScore.value;
+
+    return score; // 0 to 1
+  } catch (error) {
+    console.error("Perspective API Error:", error.response?.data || error);
+    throw new Error("Perspective API Failed");
+  }
 }
