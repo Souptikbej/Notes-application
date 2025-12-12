@@ -15,11 +15,9 @@ const Homepage = () => {
     const fetchNotes = async () => {
       try {
         const res = await api.get("/notes");
-        console.log(res.data);
         setnotes(res.data);
         SetRatelimit(false);
       } catch (error) {
-        console.log("Error fetching notes");
         if (error.response?.status === 429) {
           SetRatelimit(true);
         } else {
@@ -31,17 +29,29 @@ const Homepage = () => {
     };
     fetchNotes();
   }, []);
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-[#1f2937] to-[#111827]">
+      {/* Navbar */}
       <Navber />
+
+      {/* Rate Limit */}
       {isRatelimit && <RateLimitedUI />}
+
       <div className="max-w-7xl mx-auto p-4 mt-6">
+        {/* Loading State */}
         {loading && (
-          <div className="text-center text-primary py-10">Loading Notes...</div>
+          <div className="text-center text-blue-300 py-10">
+            Loading Notes...
+          </div>
         )}
+
+        {/* Empty State */}
         {!loading && notes.length === 0 && !isRatelimit && <NoteNotFound />}
+
+        {/* Notes Grid */}
         {notes.length > 0 && !isRatelimit && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-primary">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {notes.map((note) => (
               <Notecard key={note._id} note={note} />
             ))}
