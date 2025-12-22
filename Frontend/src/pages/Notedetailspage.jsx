@@ -16,7 +16,7 @@ const pageAnim = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
 };
 
-const NoteDetailsPage = () => {
+const Notedetailspage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -34,7 +34,7 @@ const NoteDetailsPage = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const res = await api.get(`/note/${id}`);
+        const res = await api.get(`/notes/${id}`);
         setNote(res.data);
         setDraft(res.data);
       } catch (error) {
@@ -50,7 +50,7 @@ const NoteDetailsPage = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const res = await api.put(`/note/${id}`, draft);
+      const res = await api.put(`/notes/${id}`, draft);
       setNote(res.data);
       setDraft(res.data);
       setIsEditing(false);
@@ -65,7 +65,7 @@ const NoteDetailsPage = () => {
   /* Delete note */
   const handleDelete = async () => {
     try {
-      await api.delete(`/note/${id}`);
+      await api.delete(`/notes/${id}`);
       toast.success("Note deleted");
       navigate("/");
     } catch (error) {
@@ -204,4 +204,4 @@ const NoteDetailsPage = () => {
   );
 };
 
-export default NoteDetailsPage;
+export default Notedetailspage;

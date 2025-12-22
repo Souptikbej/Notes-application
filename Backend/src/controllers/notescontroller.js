@@ -1,5 +1,4 @@
 import Note from "../models/Note.js"
-import { checkToxicity } from "../utils/toxicityCheck.js";
 
 export async function getallnotes(_, res) {
     try {
@@ -15,14 +14,6 @@ export async function getallnotes(_, res) {
 export async function createnotes(req, res) {
     try {
         const { title, content } = req.body;
-        // const text = `${title} ${content}`;
-        // const toxicity = await checkToxicity(text);
-        // if (toxicity > 0.75) {
-        //     return res.status(400).json({
-        //         flagged: true,
-        //         message: "Your note contains toxic or abusive words."
-        //     });
-        // }
         const newNote = new Note({ title, content })
         const savenotes = await newNote.save()
         res.status(201).json({ message: "Note Created Successfully ...... ", savenotes })
@@ -32,18 +23,6 @@ export async function createnotes(req, res) {
     }
 }
 
-// export const checkNoteToxicity = async (req, res) => {
-//     try {
-//         const { text } = req.body;
-//         const toxicity = await checkToxicity(text);
-//         if (toxicity > 0.75) {
-//             return res.json({ flagged: true, toxicity });
-//         }
-//         res.json({ flagged: false, toxicity });
-//     } catch (err) {
-//         res.status(500).json({ message: "Toxicity check failed" });
-//     }
-// };
 
 export async function getnoteById(req, res) {
     try {
@@ -57,7 +36,6 @@ export async function getnoteById(req, res) {
 }
 
 
-
 export async function updatenotes(req, res) {
     try {
         const { title, content } = req.body
@@ -69,8 +47,6 @@ export async function updatenotes(req, res) {
         res.status(500).json({ message: "Internal Server error" })
     }
 }
-
-
 
 
 export async function deletenotes(req, res) {
