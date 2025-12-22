@@ -28,7 +28,7 @@ export async function getnoteById(req, res) {
     try {
         const getnoteresponse = await Note.findById(req.params.id)
         if (!getnoteresponse) return res.status(404).json({ message: "Note not found....." })
-        res.status(201).json({ message: "Note Founded Successfully.......", getnoteresponse })
+        res.status(201).json(getnoteresponse)
     } catch (error) {
         console.log("Error in  getnoteById Controller", error);
         res.status(500).json({ message: "Internal Server error" })

@@ -29,7 +29,7 @@ const Notedetailspage = () => {
   const { id } = useParams();
   console.log({ id });
 
-  const [note, setNote] = useState(null);
+  const [note, setNote] = useState();
   const [draft, setDraft] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -51,7 +51,7 @@ const Notedetailspage = () => {
     };
     fetchNote();
   }, [id]);
-  console.log({note});
+  console.log({ note });
   /* Sync draft AFTER note loads */
   useEffect(() => {
     if (note) setDraft(note);
@@ -65,6 +65,7 @@ const Notedetailspage = () => {
       setNote(res.data);
       setIsEditing(false);
       toast.success("Note updated");
+      navigate("/");
     } catch {
       toast.error("Update failed");
     } finally {
