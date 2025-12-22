@@ -48,16 +48,11 @@ const Notecard = ({ note }) => {
 
         {/* Action Buttons */}
         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-blue-300 hover:text-blue-400"
-          >
-            <Pencil size={18} />
-          </button>
-
+          <Link to={`/note/${note._id}`}>
+            <button className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-blue-300 hover:text-blue-400">
+              <Pencil size={18} />
+            </button>
+          </Link>
           <button
             onClick={(e) => handleDelete(e, note._id)}
             className="p-2 rounded-full bg-white/10 hover:bg-red-500/20 transition-all text-red-300 hover:text-red-400"

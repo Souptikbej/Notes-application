@@ -27,9 +27,8 @@ const pageAnim = {
 const Notedetailspage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log({ id });
 
-  const [note, setNote] = useState();
+  const [note, setNote] = useState(null);
   const [draft, setDraft] = useState(null);
 
   const [loading, setLoading] = useState(true);
@@ -51,7 +50,6 @@ const Notedetailspage = () => {
     };
     fetchNote();
   }, [id]);
-  console.log({ note });
   /* Sync draft AFTER note loads */
   useEffect(() => {
     if (note) setDraft(note);
@@ -61,6 +59,10 @@ const Notedetailspage = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
+      if (!draft.title.trim() || !draft.content.trim()) {
+        toast.error("Title and content required");
+        return;
+      }
       const res = await api.put(`/notes/${id}`, draft);
       setNote(res.data);
       setIsEditing(false);
@@ -109,19 +111,17 @@ const Notedetailspage = () => {
       exit="exit"
       className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4"
     >
-      {/* Back button */}
-      <div className="max-w-2xl mx-auto mb-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition"
-        >
-          <ArrowLeft size={18} />
-          Back to Notes
-        </Link>
-      </div>
-
       {/* Card */}
       <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
+        {/* Back button */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition mb-6"
+        >
+          <ArrowLeft size={16} />
+          Back to Notes
+        </Link>
+
         {/* Header */}
         <div className="flex items-center gap-2 mb-6">
           <FileText className="text-indigo-400" />

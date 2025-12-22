@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Notecard from "../components/Notecard";
 import api from "../lib/axios";
 import NoteNotFound from "../components/NoteNotFound";
+import { LoaderCircleIcon } from "lucide-react";
 
 const Homepage = () => {
   const [isRatelimit, SetRatelimit] = useState(false);
@@ -42,8 +43,9 @@ const Homepage = () => {
       <div className="max-w-7xl mx-auto p-4 mt-6">
         {/* Loading State */}
         {loading && (
-          <div className="text-center text-blue-300 py-10">
-            Loading Notes...
+          <div className="flex text-center items-center justify-center text-white py-10">
+            <LoaderCircleIcon className="animate-spin size-15" />
+            Loading note...
           </div>
         )}
 

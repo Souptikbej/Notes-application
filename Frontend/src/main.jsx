@@ -8,7 +8,7 @@ import AnimatedRoutes from "./AnimatedRoutes.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      {/* <AnimatedRoutes /> */}
+      <AnimatedRoutes />
       <App />
       <Toaster />
     </BrowserRouter>
