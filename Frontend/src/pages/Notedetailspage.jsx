@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Edit3, Trash2, Save, X, FileText } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { Edit3, Trash2, Save, X, FileText, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 
-/* Page transition animation */
+/* Page animation */
 const pageAnim = {
   hidden: { opacity: 0, y: 30 },
   visible: {
@@ -16,15 +16,13 @@ const pageAnim = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
 };
 
-const Notedetailspage = () => {
+const NoteDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  /* Core state */
   const [note, setNote] = useState(null);
   const [draft, setDraft] = useState(null);
 
-  /* UI state */
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -36,8 +34,7 @@ const Notedetailspage = () => {
       try {
         const res = await api.get(`/notes/${id}`);
         setNote(res.data);
-        setDraft(res.data);
-      } catch (error) {
+      } catch (err) {
         toast.error("Failed to fetch note");
       } finally {
         setLoading(false);
@@ -46,46 +43,48 @@ const Notedetailspage = () => {
     fetchNote();
   }, [id]);
 
-  /* Save updated note */
+  /* Sync draft AFTER note loads */
+  useEffect(() => {
+    if (note) setDraft(note);
+  }, [note]);
+
+  /* Save */
   const handleSave = async () => {
     try {
       setSaving(true);
       const res = await api.put(`/notes/${id}`, draft);
       setNote(res.data);
-      setDraft(res.data);
       setIsEditing(false);
       toast.success("Note updated");
-    } catch (error) {
+    } catch {
       toast.error("Update failed");
     } finally {
       setSaving(false);
     }
   };
 
-  /* Delete note */
+  /* Delete */
   const handleDelete = async () => {
     try {
       await api.delete(`/notes/${id}`);
       toast.success("Note deleted");
       navigate("/");
-    } catch (error) {
+    } catch {
       toast.error("Delete failed");
     }
   };
 
-  /* Loading state */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         Loading note...
       </div>
     );
   }
 
-  /* Not found */
   if (!note) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
         Note not found
       </div>
     );
@@ -97,9 +96,21 @@ const Notedetailspage = () => {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-black p-4"
+      className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4"
     >
-      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
+      {/* Back button */}
+      <div className="max-w-2xl mx-auto mb-4">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition"
+        >
+          <ArrowLeft size={18} />
+          Back to Notes
+        </Link>
+      </div>
+
+      {/* Card */}
+      <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
         {/* Header */}
         <div className="flex items-center gap-2 mb-6">
           <FileText className="text-indigo-400" />
@@ -172,7 +183,7 @@ const Notedetailspage = () => {
         </div>
       </div>
 
-      {/* Delete confirmation modal */}
+      {/* Delete modal */}
       {showDelete && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <motion.div
@@ -204,4 +215,4 @@ const Notedetailspage = () => {
   );
 };
 
-export default Notedetailspage;
+export default NoteDetailsPage;
