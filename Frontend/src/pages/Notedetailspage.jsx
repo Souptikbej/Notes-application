@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Edit3, Trash2, Save, X, FileText, ArrowLeft } from "lucide-react";
+import {
+  Edit3,
+  Trash2,
+  Save,
+  X,
+  FileText,
+  ArrowLeft,
+  LoaderCircleIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
@@ -16,9 +24,10 @@ const pageAnim = {
   exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
 };
 
-const NoteDetailsPage = () => {
+const Notedetailspage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  console.log({ id });
 
   const [note, setNote] = useState(null);
   const [draft, setDraft] = useState(null);
@@ -42,7 +51,7 @@ const NoteDetailsPage = () => {
     };
     fetchNote();
   }, [id]);
-
+  console.log({note});
   /* Sync draft AFTER note loads */
   useEffect(() => {
     if (note) setDraft(note);
@@ -77,6 +86,7 @@ const NoteDetailsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <LoaderCircleIcon className="animate-spin size-15" />
         Loading note...
       </div>
     );
@@ -215,4 +225,4 @@ const NoteDetailsPage = () => {
   );
 };
 
-export default NoteDetailsPage;
+export default Notedetailspage;
