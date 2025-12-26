@@ -33,7 +33,7 @@ const Homepage = () => {
   console.log({ notes });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1f2937] to-[#111827]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black ">
       {/* Navbar */}
       <Navber />
 
