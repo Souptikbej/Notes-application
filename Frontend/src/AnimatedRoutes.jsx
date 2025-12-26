@@ -1,7 +1,8 @@
 import { AnimatePresence } from "framer-motion";
 import { Routes, Route, useLocation } from "react-router-dom";
-import NoteDetails from "./pages/Notedetailspage";
-import NotesList from "./pages/Homepage";
+import HomePage from "./pages/Homepage";
+import Createpage from "./pages/Createpage";
+import NoteDetailsPage from "./pages/Notedetailspage";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -9,8 +10,9 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<NotesList />} />
-        <Route path="/note/:id" element={<NoteDetails />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/create" element={<Createpage />} />
+        <Route path="/note/:id" element={<NoteDetailsPage />} />
       </Routes>
     </AnimatePresence>
   );
