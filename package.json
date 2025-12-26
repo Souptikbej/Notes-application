@@ -9,7 +9,7 @@
     "start": "npm run start --prefix Backend"
   },
   "repository": {
-    "type": "git",
+    "type": "git", 
     "url": "git+https://github.com/Souptikbej/Notes-application.git"
   },
   "keywords": [],
