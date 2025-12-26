@@ -1,1 +1,23 @@
-{}
+{
+  "name": "notes-application",
+  "version": "1.0.0",
+  "description": "A full-stack Notes Application built using the MERN stack. Features include user authentication, create/update/delete notes, responsive UI, and secure REST APIs. This project demonstrates CRUD operations, JWT authentication, and real-world MERN application structure.",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "start": "npm run start --prefix Backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Souptikbej/Notes-application.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Souptikbej/Notes-application/issues"
+  },
+  "homepage": "https://github.com/Souptikbej/Notes-application#readme"
+}
