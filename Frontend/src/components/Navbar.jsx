@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ListPlus } from "lucide-react";
 import { motion } from "framer-motion";
-
+import AnimatedLogo from "../components/AnimatedLogo";
 const Navbar = () => {
   return (
     <motion.header
@@ -21,17 +21,8 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link
-            to="/"
-            className="
-    text-2xl sm:text-3xl font-bold tracking-wide
-    bg-gradient-to-r from-sky-400 to-pink-500
-    bg-clip-text text-transparent
-    hover:from-indigo-400 hover:to-purple-500
-    transition-all duration-300
-  "
-          >
-            MyNotes
+          <Link to="/">
+            <AnimatedLogo />
           </Link>
 
           {/* Action */}
