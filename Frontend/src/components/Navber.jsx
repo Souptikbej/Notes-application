@@ -12,7 +12,7 @@ const Navber = () => {
           <Link to={"/create"} className="btn btn-active btn-primary gap-4">
             <ListPlus className="size-5" />
             <span className="hidden sm:inline">Add Note</span>
-            <span className="sm:hidden">New</span>
+            <span className="sm:hidden">Newww</span>
           </Link>
         </div>
       </nav>
