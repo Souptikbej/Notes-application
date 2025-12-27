@@ -2,10 +2,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 const quotes = [
-  "Winter is not a season, it’s a feeling.",
-  "Even the coldest winter ends with spring.",
-  "Let your thoughts fall softly, like snow.",
-  "In winter, we learn the art of stillness.",
+  "Winter is not just a season, it is a quiet state of mind.",
+  "Cold air, warm thoughts, and a peaceful heart.",
+  "Even the longest winter yields to gentle spring.",
+  "Snow teaches us how to slow down and listen.",
+  "In winter’s silence, clarity is born.",
+  "Let your worries melt with the falling snow.",
+  "Winter reminds us that rest is also progress.",
+  "Stillness is winter’s greatest gift.",
 ];
 
 const modalAnim = {
