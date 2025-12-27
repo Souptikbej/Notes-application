@@ -5,10 +5,10 @@ import Notecard from "../components/Notecard";
 import NoteNotFound from "../components/NoteNotFound";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
-import { LoaderCircle } from "lucide-react";
 import Snowfall from "react-snowfall";
 import { motion } from "framer-motion";
 import LoadingNotes from "../components/LoadingNotes";
+import WinterQuoteModal from "../components/WinterQuoteModal";
 
 /* Page animation */
 const pageAnim = {
@@ -24,11 +24,29 @@ const Homepage = () => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showSnow, setShowSnow] = useState(false);
+  const [snowflakes, setSnowflakes] = useState(60);
+  const [showWinterModal, setShowWinterModal] = useState(true);
 
-  /* Enable snowfall only on desktop */
+  /* Show Winter quote */
   useEffect(() => {
-    if (window.innerWidth > 768) setShowSnow(true);
+    const timer = setTimeout(() => {
+      setShowWinterModal(false);
+    }, 10000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* Adaptive snowfall for all devices */
+  useEffect(() => {
+    const updateSnowflakes = () => {
+      if (window.innerWidth < 640) setSnowflakes(30); // mobile
+      else if (window.innerWidth < 1024) setSnowflakes(50); // tablet
+      else setSnowflakes(80); // desktop
+    };
+
+    updateSnowflakes();
+    window.addEventListener("resize", updateSnowflakes);
+    return () => window.removeEventListener("resize", updateSnowflakes);
   }, []);
 
   /* Fetch notes */
@@ -59,21 +77,34 @@ const Homepage = () => {
       animate="visible"
       className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black overflow-hidden"
     >
-      <Navber />
+      {/* Snowfall – visible on ALL devices */}
+      <WinterQuoteModal
+        open={showWinterModal}
+        onClose={() => setShowWinterModal(false)}
+      />
 
-      {showSnow && <Snowfall color="#82C3D9" snowflakeCount={80} />}
+      <Snowfall
+        color="#82C3D9"
+        snowflakeCount={snowflakes}
+        style={{
+          position: "fixed",
+          width: "100vw",
+          height: "100vh",
+          pointerEvents: "none",
+          zIndex: 10,
+        }}
+      />
+
+      <Navber />
 
       {/* Rate limit UI */}
       {isRateLimited && <RateLimitedUI />}
 
-      <div className="max-w-7xl mx-auto p-4 mt-6">
-        {/* Loading */}
+      <div className="max-w-7xl mx-auto p-4 mt-6 relative z-20">
         {loading && <LoadingNotes />}
 
-        {/* Empty state */}
         {!loading && notes.length === 0 && !isRateLimited && <NoteNotFound />}
 
-        {/* Notes grid */}
         {!loading && notes.length > 0 && !isRateLimited && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {notes.map((note) => (
