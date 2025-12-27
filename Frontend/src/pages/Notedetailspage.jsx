@@ -7,7 +7,7 @@ import {
   X,
   FileText,
   ArrowLeft,
-  LoaderCircleIcon,
+  LoaderCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import api from "../lib/axios";
@@ -16,26 +16,31 @@ import Snowfall from "react-snowfall";
 
 /* Page animation */
 const pageAnim = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.45, ease: "easeOut" },
   },
-  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
+  exit: { opacity: 0, y: -16, transition: { duration: 0.3 } },
 };
 
 const Notedetailspage = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [note, setNote] = useState(null);
   const [draft, setDraft] = useState(null);
-
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showSnow, setShowSnow] = useState(false);
+
+  /* Enable snowfall only on desktop */
+  useEffect(() => {
+    if (window.innerWidth > 768) setShowSnow(true);
+  }, []);
 
   /* Fetch note */
   useEffect(() => {
@@ -43,32 +48,30 @@ const Notedetailspage = () => {
       try {
         const res = await api.get(`/notes/${id}`);
         setNote(res.data);
-      } catch (err) {
-        toast.error("Failed to fetch note");
+        setDraft(res.data);
+      } catch {
+        toast.error("Failed to load note");
       } finally {
         setLoading(false);
       }
     };
     fetchNote();
   }, [id]);
-  /* Sync draft AFTER note loads */
-  useEffect(() => {
-    if (note) setDraft(note);
-  }, [note]);
 
-  /* Save */
+  /* Save note */
   const handleSave = async () => {
+    if (!draft.title.trim() || !draft.content.trim()) {
+      toast.error("Title and content are required");
+      return;
+    }
+
     try {
       setSaving(true);
-      if (!draft.title.trim() || !draft.content.trim()) {
-        toast.error("Title and content required");
-        return;
-      }
       const res = await api.put(`/notes/${id}`, draft);
       setNote(res.data);
       setIsEditing(false);
       toast.success("Note updated");
-      navigate("/");
+      navigate("/")
     } catch {
       toast.error("Update failed");
     } finally {
@@ -76,7 +79,7 @@ const Notedetailspage = () => {
     }
   };
 
-  /* Delete */
+  /* Delete note */
   const handleDelete = async () => {
     try {
       await api.delete(`/notes/${id}`);
@@ -87,10 +90,11 @@ const Notedetailspage = () => {
     }
   };
 
+  /* Loading state */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        <LoaderCircleIcon className="animate-spin size-15" />
+      <div className="min-h-screen flex items-center justify-center bg-black text-white gap-3">
+        <LoaderCircle className="animate-spin w-6 h-6" />
         Loading note...
       </div>
     );
@@ -110,13 +114,13 @@ const Notedetailspage = () => {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4"
+      className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black p-4 overflow-hidden"
     >
-      <Snowfall color="#82C3D9" />
+      {showSnow && <Snowfall color="#82C3D9" snowflakeCount={70} />}
 
       {/* Card */}
       <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
-        {/* Back button */}
+        {/* Back */}
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition mb-6"
@@ -134,9 +138,10 @@ const Notedetailspage = () => {
         {/* Title */}
         {isEditing ? (
           <input
+            aria-label="Note title"
             value={draft.title}
             onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-4 focus:outline-none"
+            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           />
         ) : (
           <h2 className="text-xl font-semibold mb-4">{note.title}</h2>
@@ -145,13 +150,16 @@ const Notedetailspage = () => {
         {/* Content */}
         {isEditing ? (
           <textarea
-            rows="5"
+            aria-label="Note content"
+            rows="6"
             value={draft.content}
             onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:outline-none resize-none"
+            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"
           />
         ) : (
-          <p className="text-gray-200 whitespace-pre-line">{note.content}</p>
+          <p className="text-gray-200 whitespace-pre-line leading-relaxed">
+            {note.content}
+          </p>
         )}
 
         {/* Actions */}
@@ -161,7 +169,7 @@ const Notedetailspage = () => {
               <button
                 disabled={saving}
                 onClick={handleSave}
-                className="flex-1 bg-green-600 py-2 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 bg-green-600 hover:bg-green-700 transition py-2 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Save size={18} />
                 {saving ? "Saving..." : "Save"}
@@ -172,32 +180,35 @@ const Notedetailspage = () => {
                   setDraft(note);
                   setIsEditing(false);
                 }}
-                className="flex-1 bg-gray-600 py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-gray-600 hover:bg-gray-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
               >
-                <X size={18} /> Cancel
+                <X size={18} />
+                Cancel
               </button>
             </>
           ) : (
             <>
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex-1 bg-indigo-600 py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
               >
-                <Edit3 size={18} /> Edit
+                <Edit3 size={18} />
+                Edit
               </button>
 
               <button
                 onClick={() => setShowDelete(true)}
-                className="flex-1 bg-red-600 py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-red-600 hover:bg-red-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
               >
-                <Trash2 size={18} /> Delete
+                <Trash2 size={18} />
+                Delete
               </button>
             </>
           )}
         </div>
       </div>
 
-      {/* Delete modal */}
+      {/* Delete Modal */}
       {showDelete && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <motion.div
@@ -211,13 +222,13 @@ const Notedetailspage = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowDelete(false)}
-                className="flex-1 bg-gray-700 py-2 rounded-xl"
+                className="flex-1 bg-gray-700 hover:bg-gray-600 transition py-2 rounded-xl"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 bg-red-600 py-2 rounded-xl"
+                className="flex-1 bg-red-600 hover:bg-red-700 transition py-2 rounded-xl"
               >
                 Delete
               </button>

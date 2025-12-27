@@ -1,31 +1,33 @@
 import React from "react";
 import { FileText, Trash2, Pencil } from "lucide-react";
-import { Link } from "react-router";
-import { formatDate } from "../lib/utils.js";
-import api from "../lib/axios.js";
+import { Link, useNavigate } from "react-router-dom";
+import { formatDate } from "../lib/utils";
+import api from "../lib/axios";
 import toast from "react-hot-toast";
 
 const Notecard = ({ note }) => {
-  const handleDelete = async (e, id) => {
+  const navigate = useNavigate();
+
+  const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
+
+    if (!confirm("Are you sure you want to delete this note?")) return;
 
     try {
-      await api.delete(`/notes/${id}`);
-      toast.success("Note deleted successfully");
-      window.location.reload();
-    } catch (error) {
+      await api.delete(`/notes/${note._id}`);
+      toast.success("Note deleted");
+      navigate(0); // soft refresh, keeps SPA behavior
+    } catch {
       toast.error("Failed to delete note");
-      console.log("Error in handleDelete", error);
     }
   };
 
   return (
-    <Link
-      to={`/note/${note._id}`}
+    <div
+      onClick={() => navigate(`/note/${note._id}`)}
       className="
-        group
+        group cursor-pointer
         rounded-2xl 
         bg-white/10 
         backdrop-blur-xl 
@@ -41,23 +43,28 @@ const Notecard = ({ note }) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2 font-semibold">
-          <FileText className="w-5 h-5 text-blue-400 group-hover:rotate-6 transition-transform duration-300" />
+        <div className="flex items-center gap-2 font-semibold min-w-0">
+          <FileText className="w-5 h-5 text-indigo-400 transition-transform group-hover:rotate-6" />
           <h2 className="text-lg truncate">{note.title}</h2>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <Link to={`/note/${note._id}`}>
-            <button className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-blue-300 hover:text-blue-400">
-              <Pencil size={18} />
-            </button>
-          </Link>
+        {/* Actions */}
+        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition">
           <button
-            onClick={(e) => handleDelete(e, note._id)}
-            className="p-2 rounded-full bg-white/10 hover:bg-red-500/20 transition-all text-red-300 hover:text-red-400"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/note/${note._id}`);
+            }}
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition text-indigo-300"
           >
-            <Trash2 size={18} />
+            <Pencil size={16} />
+          </button>
+
+          <button
+            onClick={handleDelete}
+            className="p-2 rounded-full bg-white/10 hover:bg-red-500/20 transition text-red-300"
+          >
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
@@ -76,23 +83,21 @@ const Notecard = ({ note }) => {
           onClick={(e) => e.stopPropagation()}
           className="
             bg-gradient-to-r 
-            from-blue-500 
+            from-indigo-500 
             to-purple-500 
             text-white 
             px-3 py-1 
             rounded-full 
-            text-xs 
             shadow 
             hover:shadow-md 
             transition-transform 
-            duration-300 
             group-hover:scale-105
           "
         >
           New
         </Link>
       </div>
-    </Link>
+    </div>
   );
 };
 

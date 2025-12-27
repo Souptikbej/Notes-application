@@ -1,68 +1,88 @@
 import React, { useEffect, useState } from "react";
-import Navber from "../components/Navber";
+import Navber from "../components/Navbar";
 import RateLimitedUI from "../components/RateLimitUI";
-import toast from "react-hot-toast";
 import Notecard from "../components/Notecard";
-import api from "../lib/axios";
 import NoteNotFound from "../components/NoteNotFound";
-import { LoaderCircleIcon } from "lucide-react";
+import api from "../lib/axios";
+import toast from "react-hot-toast";
+import { LoaderCircle } from "lucide-react";
 import Snowfall from "react-snowfall";
+import { motion } from "framer-motion";
+import LoadingNotes from "../components/LoadingNotes";
+
+/* Page animation */
+const pageAnim = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
+  },
+};
 
 const Homepage = () => {
-  const [isRatelimit, SetRatelimit] = useState(false);
-  const [notes, setnotes] = useState([]);
-  const [loading, setloading] = useState(true);
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showSnow, setShowSnow] = useState(false);
 
+  /* Enable snowfall only on desktop */
+  useEffect(() => {
+    if (window.innerWidth > 768) setShowSnow(true);
+  }, []);
+
+  /* Fetch notes */
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         const res = await api.get("/notes");
-        setnotes(res.data);
-        SetRatelimit(false);
+        setNotes(res.data);
+        setIsRateLimited(false);
       } catch (error) {
         if (error.response?.status === 429) {
-          SetRatelimit(true);
+          setIsRateLimited(true);
         } else {
           toast.error("Failed to load notes");
         }
       } finally {
-        setloading(false);
+        setLoading(false);
       }
     };
+
     fetchNotes();
   }, []);
-  console.log({ notes });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black ">
-      {/* Navbar */}
+    <motion.main
+      variants={pageAnim}
+      initial="hidden"
+      animate="visible"
+      className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black overflow-hidden"
+    >
       <Navber />
-      <Snowfall color="#82C3D9" />
-      {/* Rate Limit */}
-      {isRatelimit && <RateLimitedUI />}
+
+      {showSnow && <Snowfall color="#82C3D9" snowflakeCount={80} />}
+
+      {/* Rate limit UI */}
+      {isRateLimited && <RateLimitedUI />}
 
       <div className="max-w-7xl mx-auto p-4 mt-6">
-        {/* Loading State */}
-        {loading && (
-          <div className="flex text-center items-center justify-center text-white py-10">
-            <LoaderCircleIcon className="animate-spin size-15" />
-            Loading note...
-          </div>
-        )}
+        {/* Loading */}
+        {loading && <LoadingNotes />}
 
-        {/* Empty State */}
-        {!loading && notes.length === 0 && !isRatelimit && <NoteNotFound />}
+        {/* Empty state */}
+        {!loading && notes.length === 0 && !isRateLimited && <NoteNotFound />}
 
-        {/* Notes Grid */}
-        {notes.length > 0 && !isRatelimit && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Notes grid */}
+        {!loading && notes.length > 0 && !isRateLimited && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {notes.map((note) => (
               <Notecard key={note._id} note={note} />
             ))}
           </div>
         )}
       </div>
-    </div>
+    </motion.main>
   );
 };
 

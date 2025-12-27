@@ -1,3 +1,151 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* index.css */
+@import url("https://fonts.googleapis.com/css2?family=Saira:wght@700&display=swap");
+
+body {
+    font-family: "Saira", system-ui, sans-serif;
+}
+
+/* Glow container */
+.glow-container {
+    position: relative;
+    padding: 3px;
+    border-radius: 0.9rem;
+    background: linear-gradient(90deg, #03a9f4, #f441a5);
+    transition: all 0.4s ease;
+}
+
+/* Glow effect */
+.glow-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 0.9rem;
+    z-index: -1;
+    filter: blur(0);
+    transition: filter 0.4s ease;
+}
+
+.glow-container:hover::before {
+    background: linear-gradient(90deg, #03a9f4, #f441a5);
+    filter: blur(1.2rem);
+}
+
+.glow-container:active::before {
+    filter: blur(0.3rem);
+}
+
+/* Actual button */
+.glow-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.7rem;
+    background-color: #000;
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 2px 2px 3px #000000b4;
+    transition: transform 0.15s ease, background-color 0.3s ease;
+}
+
+.glow-button:hover {
+    background-color: #111;
+}
+
+.glow-button:active {
+    transform: scale(0.95);
+}
+
+
+
+/* LOADING SVG ANIMATION */
+
+.loader {
+    --path: #a5b4fc;
+    /* indigo-300 */
+    --dot: #fb923c;
+    /* orange-400 */
+    --duration: 3s;
+
+    width: 44px;
+    height: 44px;
+    position: relative;
+    display: inline-block;
+}
+
+.loader::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    background: var(--dot);
+    top: 37px;
+    left: 19px;
+    transform: translate(-18px, -18px);
+    animation: dotRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader svg {
+    width: 100%;
+    height: 100%;
+}
+
+.loader svg rect {
+    fill: none;
+    stroke: var(--path);
+    stroke-width: 8px;
+    stroke-linejoin: round;
+    animation: pathRect var(--duration) cubic-bezier(0.785, 0.135, 0.15, 0.86) infinite;
+}
+
+.loader-text {
+    fill: white;
+    font-size: 22px;
+    font-weight: 700;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-family: system-ui, sans-serif;
+}
+
+/* Animations */
+
+@keyframes pathRect {
+    25% {
+        stroke-dashoffset: 64;
+    }
+
+    50% {
+        stroke-dashoffset: 128;
+    }
+
+    75% {
+        stroke-dashoffset: 192;
+    }
+
+    100% {
+        stroke-dashoffset: 256;
+    }
+}
+
+@keyframes dotRect {
+    25% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(18px, -18px);
+    }
+
+    75% {
+        transform: translate(0, -36px);
+    }
+
+    100% {
+        transform: translate(-18px, -18px);
+    }
+}
