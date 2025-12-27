@@ -6,6 +6,7 @@ import Notecard from "../components/Notecard";
 import api from "../lib/axios";
 import NoteNotFound from "../components/NoteNotFound";
 import { LoaderCircleIcon } from "lucide-react";
+import Snowfall from "react-snowfall";
 
 const Homepage = () => {
   const [isRatelimit, SetRatelimit] = useState(false);
@@ -36,7 +37,7 @@ const Homepage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black ">
       {/* Navbar */}
       <Navber />
-
+      <Snowfall color="#82C3D9" />
       {/* Rate Limit */}
       {isRatelimit && <RateLimitedUI />}
 

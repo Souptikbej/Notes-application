@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
+import Snowfall from "react-snowfall";
 
 /* Page animation */
 const pageAnim = {
@@ -111,6 +112,8 @@ const Notedetailspage = () => {
       exit="exit"
       className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4"
     >
+      <Snowfall color="#82C3D9" />
+
       {/* Card */}
       <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
         {/* Back button */}

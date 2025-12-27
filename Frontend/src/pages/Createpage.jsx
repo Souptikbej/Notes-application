@@ -3,6 +3,7 @@ import { FileText, Type, AlignLeft, Save, ArrowLeftIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import api from "../lib/axios";
+import Snowfall from "react-snowfall";
 
 const Createpage = () => {
   const [title, setTitle] = useState("");
@@ -31,6 +32,8 @@ const Createpage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1f2937] to-[#111827] p-4">
+      <Snowfall color="#82C3D9" />
+
       <div
         className="
           w-full max-w-lg 
