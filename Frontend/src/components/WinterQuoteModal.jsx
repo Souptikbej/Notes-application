@@ -46,43 +46,26 @@ const WinterQuoteModal = ({ open, onClose }) => {
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="
-            relative max-w-md w-[90%]
-            rounded-3xl
-            bg-gradient-to-br from-sky-400/20 via-indigo-500/20 to-purple-500/20
-            border border-white/20
-            shadow-2xl
-            px-6 py-8
-            text-center
-          "
+          className="relative max-w-md w-[90%] rounded-3xl bg-gradient-to-br from-sky-400/20 via-indigo-500/20 to-purple-500/20 border border-white/20 shadow-2xl px-6 py-8 text-center"
         >
-          {/* Close Button */}
           <button
             onClick={onClose}
+            className="absolute top-4 right-4 text-white/70 hover:text-white transition"
             aria-label="Close winter quote"
-            className="
-              absolute top-4 right-4
-              text-white/70 hover:text-white
-              transition
-            "
           >
             <X className="w-5 h-5" />
           </button>
 
-          {/* Frost Glow */}
           <div className="absolute inset-0 rounded-3xl bg-white/10 blur-2xl -z-10" />
 
-          {/* Title */}
           <h2 className="text-sm uppercase tracking-widest text-sky-300 mb-3">
             Winter Note
           </h2>
 
-          {/* Quote */}
           <p className="text-xl sm:text-2xl font-semibold text-white leading-relaxed">
             “{quote}”
           </p>
 
-          {/* Footer */}
           <p className="mt-6 text-xs text-white/60">
             Stay warm. Stay inspired.
           </p>

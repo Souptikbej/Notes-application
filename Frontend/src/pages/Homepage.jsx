@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Navber from "../components/Navbar";
+import Navbar from "../components/Navbar";
 import RateLimitedUI from "../components/RateLimitUI";
 import Notecard from "../components/Notecard";
 import NoteNotFound from "../components/NoteNotFound";
+import LoadingNotes from "../components/LoadingNotes";
+import WinterQuoteModal from "../components/WinterQuoteModal";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import Snowfall from "react-snowfall";
 import { motion } from "framer-motion";
-import LoadingNotes from "../components/LoadingNotes";
-import WinterQuoteModal from "../components/WinterQuoteModal";
 
 /* Page animation */
 const pageAnim = {
@@ -24,24 +24,37 @@ const Homepage = () => {
   const [isRateLimited, setIsRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [snowflakes, setSnowflakes] = useState(60);
-  const [showWinterModal, setShowWinterModal] = useState(true);
+  const [showWinterModal, setShowWinterModal] = useState(false);
 
-  /* Show Winter quote */
+  /* Close modal permanently */
+  const closeWinterModal = () => {
+    localStorage.setItem("winterModalSeen", "true");
+    setShowWinterModal(false);
+  };
+
+  /* Show winter quote ONLY ONCE */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowWinterModal(false);
-    }, 10000);
+    const hasSeen = localStorage.getItem("winterModalSeen");
 
-    return () => clearTimeout(timer);
+    if (!hasSeen) {
+      setShowWinterModal(true);
+
+      const timer = setTimeout(() => {
+        closeWinterModal();
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
   }, []);
 
-  /* Adaptive snowfall for all devices */
+  /* Adaptive snowfall */
   useEffect(() => {
     const updateSnowflakes = () => {
-      if (window.innerWidth < 640) setSnowflakes(30); // mobile
-      else if (window.innerWidth < 1024) setSnowflakes(50); // tablet
-      else setSnowflakes(80); // desktop
+      if (window.innerWidth < 640) setSnowflakes(30);
+      else if (window.innerWidth < 1024) setSnowflakes(50);
+      else setSnowflakes(80);
     };
 
     updateSnowflakes();
@@ -77,12 +90,10 @@ const Homepage = () => {
       animate="visible"
       className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black overflow-hidden"
     >
-      {/* Snowfall – visible on ALL devices */}
-      <WinterQuoteModal
-        open={showWinterModal}
-        onClose={() => setShowWinterModal(false)}
-      />
+      {/* Winter Modal */}
+      <WinterQuoteModal open={showWinterModal} onClose={closeWinterModal} />
 
+      {/* Snowfall */}
       <Snowfall
         color="#82C3D9"
         snowflakeCount={snowflakes}
@@ -95,9 +106,8 @@ const Homepage = () => {
         }}
       />
 
-      <Navber />
+      <Navbar />
 
-      {/* Rate limit UI */}
       {isRateLimited && <RateLimitedUI />}
 
       <div className="max-w-7xl mx-auto p-4 mt-6 relative z-20">

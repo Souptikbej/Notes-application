@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* index.css */
-@import url("https://fonts.googleapis.com/css2?family=Saira:wght@700&display=swap");
-
 body {
     font-family: "Saira", system-ui, sans-serif;
 }

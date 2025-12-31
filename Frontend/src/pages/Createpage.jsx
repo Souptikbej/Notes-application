@@ -9,14 +9,22 @@ const Createpage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showSnow, setShowSnow] = useState(false);
+  const [snowflakes, setSnowflakes] = useState(60);
+
   const navigate = useNavigate();
 
   /* Enable snowfall only on larger screens */
+  /* Adaptive snowfall */
   useEffect(() => {
-    if (window.innerWidth > 768) {
-      setShowSnow(true);
-    }
+    const updateSnowflakes = () => {
+      if (window.innerWidth < 640) setSnowflakes(30);
+      else if (window.innerWidth < 1024) setSnowflakes(50);
+      else setSnowflakes(80);
+    };
+
+    updateSnowflakes();
+    window.addEventListener("resize", updateSnowflakes);
+    return () => window.removeEventListener("resize", updateSnowflakes);
   }, []);
 
   const handleCreate = async (e) => {
@@ -41,7 +49,17 @@ const Createpage = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-gray-900 p-4 overflow-hidden">
-      {showSnow && <Snowfall color="#7dd3fc" snowflakeCount={80} />}
+      <Snowfall
+        color="#82C3D9"
+        snowflakeCount={snowflakes}
+        style={{
+          position: "fixed",
+          width: "100vw",
+          height: "100vh",
+          pointerEvents: "none",
+          zIndex: 10,
+        }}
+      />
 
       <div className="w-full max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-8 animate-fadeIn">
         {/* Back Button */}
