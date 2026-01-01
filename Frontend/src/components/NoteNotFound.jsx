@@ -32,7 +32,7 @@ const NoteNotFound = () => {
           max-w-lg w-full
           rounded-3xl
           bg-white/0
-          backdrop-blur-10
+          backdrop-blur-sm
           border border-white/20
           shadow-[0_0_80px_rgba(99,102,241,0.15)]
           p-10

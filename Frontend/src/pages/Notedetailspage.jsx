@@ -25,12 +25,31 @@ const pageAnim = {
   exit: { opacity: 0, y: -16, transition: { duration: 0.3 } },
 };
 
+/* Card animations */
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.45,
+      ease: "easeOut",
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Notedetailspage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [note, setNote] = useState(null);
-  const [draft, setDraft] = useState(null);
+  const [draft, setDraft] = useState({ title: "", content: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -48,13 +67,17 @@ const Notedetailspage = () => {
       try {
         const res = await api.get(`/notes/${id}`);
         setNote(res.data);
-        setDraft(res.data);
+        setDraft({
+          title: res.data?.title || "",
+          content: res.data?.content || "",
+        });
       } catch {
         toast.error("Failed to load note");
       } finally {
         setLoading(false);
       }
     };
+
     fetchNote();
   }, [id]);
 
@@ -71,7 +94,7 @@ const Notedetailspage = () => {
       setNote(res.data);
       setIsEditing(false);
       toast.success("Note updated");
-      navigate("/")
+      navigate("/");
     } catch {
       toast.error("Update failed");
     } finally {
@@ -90,7 +113,7 @@ const Notedetailspage = () => {
     }
   };
 
-  /* Loading state */
+  /* Loading */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white gap-3">
@@ -100,6 +123,7 @@ const Notedetailspage = () => {
     );
   }
 
+  /* Not found */
   if (!note) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
@@ -116,60 +140,105 @@ const Notedetailspage = () => {
       exit="exit"
       className="relative min-h-screen bg-gradient-to-br from-gray-900 to-black p-4 overflow-hidden"
     >
-      {showSnow && <Snowfall color="#82C3D9" snowflakeCount={70} />}
+      {/* Snowfall */}
+      {showSnow && (
+        <Snowfall
+          snowflakeCount={70}
+          color="#82C3D9"
+          style={{
+            position: "fixed",
+            width: "100vw",
+            height: "100vh",
+            pointerEvents: "none",
+          }}
+        />
+      )}
 
       {/* Card */}
-      <div className="max-w-2xl mx-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 text-white shadow-2xl">
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        className="
+          relative
+          max-w-2xl mx-auto w-full
+          rounded-3xl
+          bg-white/5
+          backdrop-blur-sm
+          border border-white/20
+          shadow-[0_0_80px_rgba(99,102,241,0.18)]
+          p-6 sm:p-8
+          text-white
+          overflow-hidden
+        "
+      >
+        {/* Glow orbs */}
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl" />
+
         {/* Back */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition mb-6"
-        >
-          <ArrowLeft size={16} />
-          Back to Notes
-        </Link>
+        <motion.div variants={itemVariants}>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition mb-6"
+          >
+            <ArrowLeft size={16} />
+            Back to Notes
+          </Link>
+        </motion.div>
 
         {/* Header */}
-        <div className="flex items-center gap-2 mb-6">
-          <FileText className="text-indigo-400" />
+        <motion.div
+          variants={itemVariants}
+          className="flex items-center gap-2 mb-6"
+        >
+          <div className="p-2 rounded-xl bg-indigo-500/10 border border-white/20">
+            <FileText className="text-indigo-400" />
+          </div>
           <h1 className="text-2xl font-bold">Note Details</h1>
-        </div>
+        </motion.div>
 
         {/* Title */}
-        {isEditing ? (
-          <input
-            aria-label="Note title"
-            value={draft.title}
-            onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-          />
-        ) : (
-          <h2 className="text-xl font-semibold mb-4">{note.title}</h2>
-        )}
+        <motion.div variants={itemVariants}>
+          {isEditing ? (
+            <input
+              value={draft.title}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, title: e.target.value }))
+              }
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            />
+          ) : (
+            <h2 className="text-xl font-semibold mb-4">{note.title}</h2>
+          )}
+        </motion.div>
 
         {/* Content */}
-        {isEditing ? (
-          <textarea
-            aria-label="Note content"
-            rows="6"
-            value={draft.content}
-            onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"
-          />
-        ) : (
-          <p className="text-gray-200 whitespace-pre-line leading-relaxed">
-            {note.content}
-          </p>
-        )}
+        <motion.div variants={itemVariants}>
+          {isEditing ? (
+            <textarea
+              rows="6"
+              value={draft.content}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, content: e.target.value }))
+              }
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none"
+            />
+          ) : (
+            <p className="text-gray-200 whitespace-pre-line leading-relaxed">
+              {note.content}
+            </p>
+          )}
+        </motion.div>
 
         {/* Actions */}
-        <div className="flex gap-3 mt-8">
+        <motion.div variants={itemVariants} className="flex gap-3 mt-8">
           {isEditing ? (
             <>
               <button
                 disabled={saving}
                 onClick={handleSave}
-                className="flex-1 bg-green-600 hover:bg-green-700 transition py-2 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 py-2 rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition disabled:opacity-50"
               >
                 <Save size={18} />
                 {saving ? "Saving..." : "Save"}
@@ -180,7 +249,7 @@ const Notedetailspage = () => {
                   setDraft(note);
                   setIsEditing(false);
                 }}
-                className="flex-1 bg-gray-600 hover:bg-gray-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-white/10 border border-white/20 py-2 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition"
               >
                 <X size={18} />
                 Cancel
@@ -190,7 +259,7 @@ const Notedetailspage = () => {
             <>
               <button
                 onClick={() => setIsEditing(true)}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 py-2 rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition"
               >
                 <Edit3 size={18} />
                 Edit
@@ -198,15 +267,15 @@ const Notedetailspage = () => {
 
               <button
                 onClick={() => setShowDelete(true)}
-                className="flex-1 bg-red-600 hover:bg-red-700 transition py-2 rounded-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-gradient-to-r from-red-600 to-pink-600 py-2 rounded-xl flex items-center justify-center gap-2 hover:scale-[1.02] transition"
               >
                 <Trash2 size={18} />
                 Delete
               </button>
             </>
           )}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Delete Modal */}
       {showDelete && (

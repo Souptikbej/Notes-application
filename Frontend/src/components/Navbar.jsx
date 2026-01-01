@@ -12,9 +12,9 @@ const Navbar = () => {
     >
       <nav
         className="
-          bg-white/10
-          backdrop-blur-xl
-          border-b border-white/10
+          bg-white/0
+          backdrop-blur-sm
+          border-b border-white/15
         "
         role="navigation"
         aria-label="Main Navigation"
